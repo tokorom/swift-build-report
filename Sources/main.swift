@@ -112,9 +112,9 @@ func handle(data: Data) {
         return
     }
 
-    let lines = string.characters.split(separator: "\n").map { String($0) }
+    let lines = string.characters.split(separator: "\n", omittingEmptySubsequences: false).map { String($0) }
     for line in lines {
-        if isPretty {
+        if isPretty && !line.isEmpty {
             print(prettyFormat(for: line))
         } else {
             print(line)
