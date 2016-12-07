@@ -75,7 +75,8 @@ class Formatter {
     lazy var formats: [Format] = [
         // swift build
         Format(kind: .linking, pattern: "^Linking ", replacer: .color(.green)),
-        Format(kind: .compileSwiftModule, pattern: "^Compile Swift Module ", replacer: .color(.green)),
+        Format(kind: .compileStart, pattern: "^Compile Swift Module ", replacer: .color(.cyan)),
+        Format(kind: .compileError, pattern: "^\\/", replacer: .color(.red)),
         // npm
         Format(kind: .npmError, pattern: "^npm ERR! ", replacer: .color(.red)),
         Format(kind: .npmWarning, pattern: "^npm WARN ", replacer: .color(.yellow)),
@@ -100,7 +101,7 @@ struct FormattedLine {
         case compileError
         case compileErrorSupplement
         case linking
-        case compileSwiftModule
+        case compileStart
         case buildErrorSummary
 
         case npmError
