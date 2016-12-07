@@ -1,7 +1,4 @@
 {
-  "config": {
-    "exe": "swift-error-report"
-  },
   "scripts": {
     "build": "swift build",
     "watch": "watch 'npm run build' ./Sources",
