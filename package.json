@@ -1,0 +1,12 @@
+{
+  "config": {
+    "exe": "swift-error-report"
+  },
+  "scripts": {
+    "build": "swift build",
+    "run": "./.build/debug/$npm_package_config_exe",
+    "build-and-run": "npm run build; npm run run",
+    "watch": "watch 'npm run build-and-run' ./Sources",
+    "start": "npm run watch"
+  }
+}
