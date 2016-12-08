@@ -20,8 +20,17 @@ let formatter = Formatter()
 
 /// MARK: - functions
 
-func prettyFormat(for line: String) -> String {
-    return formatter.parse(line: line).line
+func printIfNeeded(for line: String) {
+    if isPretty && !line.isEmpty {
+        let formattedLine = formatter.parse(line: line).line
+        print(formattedLine)
+    } else {
+        print(line)
+    }
+}
+
+func reportIfNeeded(for line: String) {
+    reporter.add(line: line)
 }
 
 func handle(data: Data) {
@@ -31,13 +40,8 @@ func handle(data: Data) {
 
     let lines = string.characters.split(separator: "\n", omittingEmptySubsequences: false).map { String($0) }
     for line in lines {
-        if isPretty && !line.isEmpty {
-            print(prettyFormat(for: line))
-        } else {
-            print(line)
-        }
-
-        reporter.add(line: line)
+        printIfNeeded(for: line)
+        reportIfNeeded(for: line)
     }
 }
 
