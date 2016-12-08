@@ -22,8 +22,8 @@ let formatter = Formatter()
 
 func printIfNeeded(for line: String) {
     if isPretty && !line.isEmpty {
-        let formattedLine = formatter.parse(line: line).line
-        print(formattedLine)
+        let formatted = formatter.parse(line: line).line
+        print(formatted)
     } else {
         print(line)
     }

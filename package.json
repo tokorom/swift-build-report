@@ -1,7 +1,8 @@
 {
   "scripts": {
     "build": "swift build",
-    "watch": "watch 'npm run build' ./Sources",
+    "test": "swift test",
+    "watch": "watch 'npm run test' ./Tests",
     "start": "npm run watch"
   }
 }
