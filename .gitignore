@@ -3,5 +3,5 @@
 /Packages
 /*.xcodeproj
 
-/reporter
-npm-debug.log
+/swift-build-report
+/release.zip
