@@ -15,13 +15,14 @@ let isPretty = true
 let stdin = FileHandle.standardInput
 
 let reporter = Reporter()
-let formatter = Formatter()
+let formatter: Formatter = DefaultFormatter()
+let ignoreLines: IgnoreLines = DefaultIgnoreLines()
 
 /// MARK: - functions
 
 func printIfNeeded(for line: String) {
     if isPretty && !line.isEmpty {
-        let formatted = formatter.parse(line: line).line
+        let formatted = formatter.format(line: line)
         print(formatted)
     } else {
         print(line)
@@ -39,6 +40,9 @@ func handle(data: Data) {
 
     let lines = string.characters.split(separator: "\n", omittingEmptySubsequences: false).map { String($0) }
     for line in lines {
+        guard !ignoreLines.ignore(line: line) else {
+            continue
+        }
         printIfNeeded(for: line)
         reportIfNeeded(for: line)
     }
