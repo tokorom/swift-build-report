@@ -4,9 +4,6 @@
     "build": "swift build",
     "test": "swift test",
     "watch": "watch 'npm run test' ./Tests",
-
-    "archive": "npm run copy; npm run zip",
-    "copy": "cp ./.build/debug/SwiftBuildReport ./swift-build-report",
-    "zip": "zip release.zip ./swift-build-report"
+    "copy": "cp ./.build/debug/SwiftBuildReport ./swift-build-report"
   }
 }

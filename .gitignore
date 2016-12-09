@@ -2,6 +2,3 @@
 /.build
 /Packages
 /*.xcodeproj
-
-/swift-build-report
-/release.zip
