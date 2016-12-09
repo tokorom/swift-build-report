@@ -13,7 +13,6 @@ let isPretty = true
 // MARK: - setup
 
 let stdin = FileHandle.standardInput
-let stdout = FileHandle.standardOutput
 
 let reporter = Reporter()
 let formatter = Formatter()
@@ -45,11 +44,19 @@ func handle(data: Data) {
     }
 }
 
-// MARK: - main
+func waitAndReadAvailableData() -> Bool {
+    let data = stdin.availableData
 
-stdin.readabilityHandler = { fileHandle in
-    let data = fileHandle.availableData
+    guard 0 < data.count else {
+        return false
+    }
+
     handle(data: data)
+    return true
 }
 
-let _ = stdout.readDataToEndOfFile()
+// MARK: - main
+
+while waitAndReadAvailableData() {}
+
+exit(EXIT_SUCCESS)
