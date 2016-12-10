@@ -14,7 +14,7 @@ enum FormatKind: String {
 
     var formatter: Formatter {
         switch self {
-        case .simple: return DefaultFormatter()
+        case .simple: return SimpleFormatter()
         }
     }
 }

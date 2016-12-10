@@ -8,7 +8,7 @@ import XCTest
 @testable import SwiftBuildReport
 
 class DefaultFormatterTests: XCTestCase {
-    let subject = DefaultFormatter()
+    let subject = SimpleFormatter()
 
     func testNormalLine() {
         let line = "foo bar"

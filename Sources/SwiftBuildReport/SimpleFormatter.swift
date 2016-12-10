@@ -1,12 +1,12 @@
 //
-//  DefaultFormatter.swift
+//  SimpleFormatter.swift
 //
 //  Created by ToKoRo on 2016-12-09.
 //
 
 import Foundation
 
-class DefaultFormatter: Formatter {
+class SimpleFormatter: Formatter {
     lazy var formats: [Format] = [
         Format(kind: .testSuiteStarted, pattern: "^Test Suite .* started ", replacer: .color(.white)),
         Format(kind: .testSuitePassed, pattern: "^Test Suite .* passed at ", replacer: .color(.green)),
