@@ -98,14 +98,14 @@ class DefaultFormatterTests: XCTestCase {
 
     func testErrorPoint() {
         let line = "  ^  "
-        let expected: FormattedLine.Kind = .testErrorPoint
+        let expected: FormattedLine.Kind = .errorPoint
         let kind = subject.parse(line: line).kind
         XCTAssertEqual(kind, expected)
     }
 
     func testErrorPointLong() {
         let line = "  ^~~~~~  "
-        let expected: FormattedLine.Kind = .testErrorPoint
+        let expected: FormattedLine.Kind = .errorPoint
         let kind = subject.parse(line: line).kind
         XCTAssertEqual(kind, expected)
     }
