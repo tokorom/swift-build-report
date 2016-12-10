@@ -16,7 +16,9 @@ class DefaultFormatter: Formatter {
         Format(kind: .testCaseFailed, pattern: "^Test Case .* failed [(]"),
         Format(kind: .testError, pattern: "^\\/.* failed: .*- *$"),
         Format(kind: .testSummary, pattern: " Executed [0-9]+ tests?, with [0-9]+ failures? "),
-        Format(kind: .compileError, pattern: "^\\/.* error: "),
+        Format(kind: .compileError, pattern: "^.*:[0-9]*:[0-9]*: error: "),
+        Format(kind: .compileWarning, pattern: "^.*:[0-9]*:[0-9]*: warning: "),
+        Format(kind: .compileNote, pattern: "^.*:[0-9]*:[0-9]*: note: "),
         Format(kind: .compileStart, pattern: "^Compile Swift Module "),
         Format(kind: .errorPoint, pattern: " *\\^~* *"),
         Format(kind: .linking, pattern: "^Linking "),
@@ -79,7 +81,8 @@ struct FormattedLine {
         case errorPoint
         case testSummary
         case compileError
-        case compileErrorSupplement
+        case compileWarning
+        case compileNote
         case linking
         case compileStart
         case buildSummaryWithError

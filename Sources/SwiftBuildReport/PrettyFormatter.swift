@@ -63,8 +63,23 @@ class PrettyFormatter: DefaultFormatter {
         ))
         replacers[.compileStart] = .color(.cyan)
 
-        // "⚠️ "
-        // "📓"
+        replacers[.compileWarning] = .replacePattern(ReplacePattern(
+            pattern: "^(.*) warning: (.*)$",
+            template: "⚠️ " + " "
+                + "$1" + " "
+                + AnsiColor.yellow.text + "$2" + AnsiColor.reset.text,
+            ansiColor: nil
+        ))
+        replacers[.compileStart] = .color(.cyan)
+
+        replacers[.compileNote] = .replacePattern(ReplacePattern(
+            pattern: "^(.*) note: (.*)$",
+            template: AnsiColor.blue.text + "note: " + AnsiColor.reset.text
+                + "$1" + " "
+                + AnsiColor.blue.text + "$2" + AnsiColor.reset.text,
+            ansiColor: nil
+        ))
+        replacers[.compileStart] = .color(.cyan)
 
         replacers[.linking] = .color(.white)
         replacers[.buildSummaryWithError] = .color(.red)

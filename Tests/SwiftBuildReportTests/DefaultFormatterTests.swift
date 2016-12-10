@@ -31,6 +31,20 @@ class DefaultFormatterTests: XCTestCase {
         XCTAssertEqual(kind, expected)
     }
 
+    func testCompileWarning() {
+        let line = "/Users/hoge/develop/Hoge.swift:28:9: warning: expression following 'return' is treated as an argument of the 'return'"
+        let expected: FormattedLine.Kind = .compileWarning
+        let kind = subject.parse(line: line).kind
+        XCTAssertEqual(kind, expected)
+    }
+
+    func testCompileNote() {
+        let line = "Foundation/Hoge.swift:28:9: note: indent the expression to silence this warning"
+        let expected: FormattedLine.Kind = .compileNote
+        let kind = subject.parse(line: line).kind
+        XCTAssertEqual(kind, expected)
+    }
+
     func testLinking() {
         let line = "Linking ./.build/debug/SwiftBuildReport"
         let expected: FormattedLine.Kind = .linking

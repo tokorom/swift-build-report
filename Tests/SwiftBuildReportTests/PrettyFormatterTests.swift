@@ -69,4 +69,25 @@ class PrettyFormatterTests: XCTestCase {
         let result = utils.removeColorCode(subject.parse(line: line).line ?? "")
         XCTAssertEqual(result, expected)
     }
+
+    func testCompileError() {
+        let line = "/Users/tokorom/develop/github/swift-build-report/Sources/SwiftBuildReport/main.swift:31:1: error: foo bar"
+        let expected = "❌  /Users/tokorom/develop/github/swift-build-report/Sources/SwiftBuildReport/main.swift:31:1: foo bar"
+        let result = utils.removeColorCode(subject.parse(line: line).line ?? "")
+        XCTAssertEqual(result, expected)
+    }
+
+    func testCompileWarning() {
+        let line = "/Users/hoge/develop/Hoge.swift:28:9: warning: expression following 'return' is treated as an argument of the 'return'"
+        let expected = "⚠️  /Users/hoge/develop/Hoge.swift:28:9: expression following 'return' is treated as an argument of the 'return'"
+        let result = utils.removeColorCode(subject.parse(line: line).line ?? "")
+        XCTAssertEqual(result, expected)
+    }
+
+    func testCompileNote() {
+        let line = "Foundation/Hoge.swift:28:9: note: indent the expression to silence this warning"
+        let expected = "note: Foundation/Hoge.swift:28:9: indent the expression to silence this warning"
+        let result = utils.removeColorCode(subject.parse(line: line).line ?? "")
+        XCTAssertEqual(result, expected)
+    }
 }
