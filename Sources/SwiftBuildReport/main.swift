@@ -10,10 +10,12 @@ import Commander
 // MARK: - enums
 
 enum FormatKind: String {
+    case pretty = "pretty"
     case simple = "simple"
 
     var formatter: Formatter {
         switch self {
+        case .pretty: return PrettyFormatter()
         case .simple: return SimpleFormatter()
         }
     }
@@ -54,16 +56,35 @@ class Main {
     }
 
     func run() {
+        printStartMessageIfNeeded()
+
         while waitAndReadAvailableData() {}
+
+        printSumamryIfNeeded()
+    }
+
+    func printStartMessageIfNeeded() {
+        guard let line = formatter?.startMessage else {
+            return
+        }
+        print(line)
     }
 
     func printIfNeeded(for line: String) {
         if !line.isEmpty, let formatter = formatter {
-            let formatted = formatter.format(line: line)
-            print(formatted)
+            if let formatted = formatter.format(line: line) {
+                print(formatted)
+            }
         } else {
             print(line)
         }
+    }
+
+    func printSumamryIfNeeded() {
+        guard let line = formatter?.summary else {
+            return
+        }
+        print(line)
     }
 
     func reportIfNeeded(for line: String) {
@@ -109,7 +130,7 @@ class Main {
 // MARK: - command
 
 command(
-  Option("format", "simple", description: "the print format for swift build/text"),
+  Option("format", "pretty", description: "the print format for swift build/text (pretty or simple)"),
   Option("report", "none", description: "the output path for error report"),
   Option("ignore", "default", description: "the setting for ignore lines (default or none)")
 ) { (formatParam: String, reportParam: String, ignoreParam: String) in

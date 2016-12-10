@@ -3,4 +3,5 @@
 /Packages
 /*.xcodeproj
 
+/npm-debug.log
 /npm-debug.log.*

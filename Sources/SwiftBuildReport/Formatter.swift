@@ -7,5 +7,7 @@
 import Foundation
 
 public protocol Formatter {
-    func format(line: String) -> String
+    func format(line: String) -> String?
+    var startMessage: String? { get }
+    var summary: String? { get }
 }
