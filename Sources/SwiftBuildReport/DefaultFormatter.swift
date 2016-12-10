@@ -8,16 +8,18 @@ import Foundation
 
 class DefaultFormatter: Formatter {
     lazy var formats: [Format] = [
-        Format(kind: .testSuiteStarted, pattern: "^Test Suite .* started ", replacer: .color(.cyan)),
-        Format(kind: .testCaseStarted, pattern: "^Test Case .* started.$", replacer: .color(.cyan)),
+        Format(kind: .testSuiteStarted, pattern: "^Test Suite .* started ", replacer: .color(.white)),
+        Format(kind: .testCaseStarted, pattern: "^Test Case .* started.$", replacer: .color(.white)),
+        Format(kind: .testCasePassed, pattern: "^Test Case .* passed [(]", replacer: .color(.green)),
+        Format(kind: .testCaseFailed, pattern: "^Test Case .* failed [(]", replacer: .color(.red)),
         Format(kind: .testErrorPoint, pattern: " *\\^~* *", replacer: .color(.cyan)),
         Format(kind: .testError, pattern: "^\\/.* failed: .*- *$", replacer: .patterns([
             ReplacePattern(pattern: " \\([^()]+\\) ", ansiColor: .blue),
             ReplacePattern(pattern: "^.*$", ansiColor: .red),
         ])),
         Format(kind: .testSummary, pattern: " Executed [0-9]+ tests?, with [0-9]+ failures? ", replacer: .patterns([
-            ReplacePattern(pattern: "0 failures ", ansiColor: .green),
-            ReplacePattern(pattern: "[1-9][0-9]* failures? ", ansiColor: .red),
+            ReplacePattern(pattern: "0 failures [(]0 unexpected[)]", ansiColor: .green),
+            ReplacePattern(pattern: "[1-9][0-9]* failures? [(][0-9]+ unexpected[)]", ansiColor: .red),
         ])),
         Format(kind: .compileError, pattern: "^\\/.* error: ", replacer: .color(.red)),
         Format(kind: .compileStart, pattern: "^Compile Swift Module ", replacer: .color(.cyan)),
@@ -47,6 +49,8 @@ struct FormattedLine {
     enum Kind {
         case testSuiteStarted
         case testCaseStarted
+        case testCasePassed
+        case testCaseFailed
         case testError
         case testErrorPoint
         case testSummary

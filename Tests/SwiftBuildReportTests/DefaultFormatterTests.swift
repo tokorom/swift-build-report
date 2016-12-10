@@ -59,6 +59,20 @@ class DefaultFormatterTests: XCTestCase {
         XCTAssertEqual(kind, expected)
     }
 
+    func testTestCasePassed() {
+        let line = "Test Case '-[SwiftBuildReportTests.DefaultFormatterTests testErrorPoint]' passed (0.000 seconds)."
+        let expected: FormattedLine.Kind = .testCasePassed
+        let kind = subject.parse(line: line).kind
+        XCTAssertEqual(kind, expected)
+    }
+
+    func testTestCaseFailed() {
+        let line = "Test Case '-[SwiftBuildReportTests.DefaultFormatterTests testTestCasePassed]' failed (0.002 seconds)."
+        let expected: FormattedLine.Kind = .testCaseFailed
+        let kind = subject.parse(line: line).kind
+        XCTAssertEqual(kind, expected)
+    }
+
     func testTestError() {
         let line = "/Users/tokorom/develop/github/swift-build-report/Tests/SwiftBuildReportTests/DefaultFormatterTests.swift"
             + ":45: error: -[SwiftBuildReportTests.DefaultFormatterTests testBuildErrorSummary] : "
