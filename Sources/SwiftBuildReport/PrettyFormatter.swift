@@ -24,6 +24,7 @@ class PrettyFormatter: DefaultFormatter {
     )
 
     var isAllTestsFinished = false
+    var allTestsSummary: String? = nil
 
     override init() {
         super.init()
@@ -53,8 +54,17 @@ class PrettyFormatter: DefaultFormatter {
         ))
         replacers[.testSummary] = .ignore
 
-        replacers[.compileError] = .color(.red)
+        replacers[.compileError] = .replacePattern(ReplacePattern(
+            pattern: "^(.*) error: (.*)$",
+            template: AnsiColor.red.text + "❌ " + AnsiColor.reset.text + " "
+                + "$1" + " "
+                + AnsiColor.red.text + "$2" + AnsiColor.reset.text,
+            ansiColor: nil
+        ))
         replacers[.compileStart] = .color(.cyan)
+
+        // "⚠️ "
+        // "📓"
 
         replacers[.linking] = .color(.white)
         replacers[.buildSummaryWithError] = .color(.red)
@@ -86,6 +96,8 @@ class PrettyFormatter: DefaultFormatter {
         } else {
             summary = line
         }
+
+        allTestsSummary = summary
 
         print("\n" + summary)
     }

@@ -9,14 +9,26 @@ import XCTest
 
 class PrettyFormatterTests: XCTestCase {
     let subject = PrettyFormatter()
-
-    var colorCodePattern = "\u{001B}\\[0;[0-9]+m"
-    lazy var regexp: NSRegularExpression? = try? NSRegularExpression(pattern: self.colorCodePattern)
+    let utils = Utils()
 
     func testTestSuiteStarted() {
         let line = "Test Suite 'All tests' started at 2016-12-10 16:04:52.126"
         let expected = "All tests"
-        let result = removeColorCode(subject.parse(line: line).line ?? "")
+        let result = utils.removeColorCode(subject.parse(line: line).line ?? "")
+        XCTAssertEqual(result, expected)
+    }
+
+    func testTestSuitePassed() {
+        let line = "Test Suite 'DefaultFormatterTests' passed at 2016-12-10 14:31:04.973."
+        let expected = ""
+        let result = utils.removeColorCode(subject.parse(line: line).line ?? "")
+        XCTAssertEqual(result, expected)
+    }
+
+    func testTestSuiteFailed() {
+        let line = "Test Suite 'DefaultFormatterTests' failed at 2016-12-10 14:34:46.050."
+        let expected = ""
+        let result = utils.removeColorCode(subject.parse(line: line).line ?? "")
         XCTAssertEqual(result, expected)
     }
 
@@ -26,14 +38,35 @@ class PrettyFormatterTests: XCTestCase {
         let result = subject.parse(line: line).line
         XCTAssertEqual(result, expected)
     }
-}
 
-extension PrettyFormatterTests {
-    func removeColorCode(_ line: String) -> String {
-        let range = NSRange(location: 0, length: line.characters.count)
-        guard let result = regexp?.stringByReplacingMatches(in: line, range: range, withTemplate: "") else {
-            return line
-        }
-        return result
+    func testTestCasePassed() {
+        let line = "Test Case '-[SwiftBuildReportTests.DefaultFormatterTests testErrorPoint]' passed (0.000 seconds)."
+        let expected = "    ✓ testErrorPoint (0.000 seconds)"
+        let result = utils.removeColorCode(subject.parse(line: line).line ?? "")
+        XCTAssertEqual(result, expected)
+    }
+
+    func testTestCaseFailed() {
+        let line = "Test Case '-[SwiftBuildReportTests.DefaultFormatterTests testTestCasePassed]' failed (0.002 seconds)."
+        let expected = ""
+        let result = utils.removeColorCode(subject.parse(line: line).line ?? "")
+        XCTAssertEqual(result, expected)
+    }
+
+    func testTestError() {
+        let line = "/Users/tokorom/develop/github/swift-build-report/Tests/SwiftBuildReportTests/DefaultFormatterTests.swift"
+            + ":45: error: -[SwiftBuildReportTests.DefaultFormatterTests testBuildErrorSummary] : "
+            + "XCTAssertEqual failed: (\"normal\") is not equal to (\"buildSummaryWithError\") -"
+        let expected = "    ✗ testBuildErrorSummary, XCTAssertEqual failed: (\"normal\") "
+            + "is not equal to (\"buildSummaryWithError\")"
+        let result = utils.removeColorCode(subject.parse(line: line).line ?? "")
+        XCTAssertEqual(result, expected)
+    }
+
+    func testTestSummary() {
+        let line = "    Executed 10 tests, with 1 failure (0 unexpected) in 0.008 (0.009) seconds"
+        let expected = ""
+        let result = utils.removeColorCode(subject.parse(line: line).line ?? "")
+        XCTAssertEqual(result, expected)
     }
 }
