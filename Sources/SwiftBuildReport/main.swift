@@ -5,62 +5,108 @@
 //
 
 import Foundation
+import Commander
 
-// MARK: - debug
+// MARK: - enums
 
-let isPretty = true
+enum FormatKind: String {
+    case simple = "simple"
 
-// MARK: - setup
-
-let stdin = FileHandle.standardInput
-
-let reporter = Reporter()
-let formatter: Formatter = DefaultFormatter()
-let ignoreLines: IgnoreLines = DefaultIgnoreLines()
-
-/// MARK: - functions
-
-func printIfNeeded(for line: String) {
-    if isPretty && !line.isEmpty {
-        let formatted = formatter.format(line: line)
-        print(formatted)
-    } else {
-        print(line)
-    }
-}
-
-func reportIfNeeded(for line: String) {
-    reporter.add(line: line)
-}
-
-func handle(data: Data) {
-    guard let string = String(data: data, encoding: .utf8) else {
-        return
-    }
-
-    let lines = string.characters.split(separator: "\n", omittingEmptySubsequences: false).map { String($0) }
-    for line in lines {
-        guard !ignoreLines.ignore(line: line) else {
-            continue
+    var formatter: Formatter {
+        switch self {
+        case .simple: return DefaultFormatter()
         }
-        printIfNeeded(for: line)
-        reportIfNeeded(for: line)
     }
 }
 
-func waitAndReadAvailableData() -> Bool {
-    let data = stdin.availableData
+enum ReportKind: String {
+    case `default` = "default"
 
-    guard 0 < data.count else {
-        return false
+    var reporter: Reporter {
+        fatalError("\(#function) is not implemented")
     }
-
-    handle(data: data)
-    return true
 }
 
-// MARK: - main
+enum IgnoreKind: String {
+    case `default` = "default"
 
-while waitAndReadAvailableData() {}
+    var ignoreLines: IgnoreLines {
+        switch self {
+        case .default: return DefaultIgnoreLines()
+        }
+    }
+}
 
-exit(EXIT_SUCCESS)
+// MARK: - main class
+
+class Main {
+    let formatter: Formatter?
+    let reporter: Reporter?
+    let ignoreLines: IgnoreLines?
+
+    lazy var stdin: FileHandle = FileHandle.standardInput
+
+    init(formatter: Formatter?, reporter: Reporter?, ignoreLines: IgnoreLines?) {
+        self.formatter = formatter
+        self.reporter = reporter
+        self.ignoreLines = ignoreLines
+    }
+
+    func run() {
+        while waitAndReadAvailableData() {}
+    }
+
+    func printIfNeeded(for line: String) {
+        if !line.isEmpty, let formatter = formatter {
+            let formatted = formatter.format(line: line)
+            print(formatted)
+        } else {
+            print(line)
+        }
+    }
+
+    func reportIfNeeded(for line: String) {
+        reporter?.add(line: line)
+    }
+
+    func handle(data: Data) {
+        guard let string = String(data: data, encoding: .utf8) else {
+            return
+        }
+
+        let lines = string.characters.split(separator: "\n", omittingEmptySubsequences: false).map { String($0) }
+        for line in lines {
+            guard !(ignoreLines?.ignore(line: line) ?? false) else {
+                continue
+            }
+            printIfNeeded(for: line)
+            reportIfNeeded(for: line)
+        }
+    }
+
+    func waitAndReadAvailableData() -> Bool {
+        let data = stdin.availableData
+
+        guard 0 < data.count else {
+            return false
+        }
+
+        handle(data: data)
+        return true
+    }
+}
+
+// MARK: - command
+
+command(
+  Option("format", "simple", description: "the print format for swift build/text"),
+  Option("report", "none", description: "the output path for error report"),
+  Option("ignore", "default", description: "the setting for ignore lines (default or none)")
+) { (formatParam: String, reportParam: String, ignoreParam: String) in
+    let formatter = FormatKind(rawValue: formatParam)?.formatter
+    let reporter = ReportKind(rawValue: reportParam)?.reporter
+    let ignoreLines = IgnoreKind(rawValue: ignoreParam)?.ignoreLines
+
+    let main = Main(formatter: formatter, reporter: reporter, ignoreLines: ignoreLines)
+    main.run()
+}.run()

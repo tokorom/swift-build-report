@@ -127,6 +127,6 @@ class DefaultFormatterTests: XCTestCase {
         let result = formatted.line
 
         XCTAssertEqual(kind, expected)
-        XCTAssertEqual(result, "    Executed 10 tests, with \u{001B}[0;31m1 failure \u{001B}[0;0m(0 unexpected) in 0.008 (0.009) seconds")
+        XCTAssertEqual(result, "    Executed 10 tests, with \u{001B}[0;31m1 failure (0 unexpected)\u{001B}[0;0m in 0.008 (0.009) seconds")
     }
 }
