@@ -9,6 +9,8 @@ import Foundation
 class DefaultFormatter: Formatter {
     lazy var formats: [Format] = [
         Format(kind: .testSuiteStarted, pattern: "^Test Suite .* started ", replacer: .color(.white)),
+        Format(kind: .testSuitePassed, pattern: "^Test Suite .* passed at ", replacer: .color(.green)),
+        Format(kind: .testSuiteFailed, pattern: "^Test Suite .* failed at ", replacer: .color(.green)),
         Format(kind: .testCaseStarted, pattern: "^Test Case .* started.$", replacer: .color(.white)),
         Format(kind: .testCasePassed, pattern: "^Test Case .* passed [(]", replacer: .color(.green)),
         Format(kind: .testCaseFailed, pattern: "^Test Case .* failed [(]", replacer: .color(.red)),
@@ -48,6 +50,8 @@ struct FormattedLine {
 
     enum Kind {
         case testSuiteStarted
+        case testSuitePassed
+        case testSuiteFailed
         case testCaseStarted
         case testCasePassed
         case testCaseFailed

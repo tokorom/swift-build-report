@@ -45,6 +45,7 @@ class Main {
     let ignoreLines: IgnoreLines?
 
     lazy var stdin: FileHandle = FileHandle.standardInput
+    var last: String?
 
     init(formatter: Formatter?, reporter: Reporter?, ignoreLines: IgnoreLines?) {
         self.formatter = formatter
@@ -74,7 +75,16 @@ class Main {
             return
         }
 
-        let lines = string.characters.split(separator: "\n", omittingEmptySubsequences: false).map { String($0) }
+        let lineString: String
+        if let last = last {
+            lineString = last + string
+        } else {
+            lineString = string
+        }
+
+        var lines = lineString.characters.split(separator: "\n", omittingEmptySubsequences: false).map { String($0) }
+        self.last = lines.popLast()
+
         for line in lines {
             guard !(ignoreLines?.ignore(line: line) ?? false) else {
                 continue

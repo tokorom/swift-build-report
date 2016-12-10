@@ -52,6 +52,20 @@ class DefaultFormatterTests: XCTestCase {
         XCTAssertEqual(kind, expected)
     }
 
+    func testTestSuitePassed() {
+        let line = "Test Suite 'DefaultFormatterTests' passed at 2016-12-10 14:31:04.973."
+        let expected: FormattedLine.Kind = .testSuitePassed
+        let kind = subject.parse(line: line).kind
+        XCTAssertEqual(kind, expected)
+    }
+
+    func testTestSuiteFailed() {
+        let line = "Test Suite 'DefaultFormatterTests' failed at 2016-12-10 14:34:46.050."
+        let expected: FormattedLine.Kind = .testSuiteFailed
+        let kind = subject.parse(line: line).kind
+        XCTAssertEqual(kind, expected)
+    }
+
     func testTestCaseStarted() {
         let line = "Test Case '-[SwiftBuildReportTests.AnsiColorTests testGreen]' started."
         let expected: FormattedLine.Kind = .testCaseStarted
