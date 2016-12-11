@@ -12,6 +12,7 @@ class PrettyFormatterAllTestsSumaryTests: XCTestCase {
 
     func testAllTestsSummary() {
         let subject = PrettyFormatter()
+        subject.maskPrint = true
 
         _ = subject.format(line: "Test Suite 'All tests' passed at 2016-12-10 18:37:45.581.")
         _ = subject.format(line: "    Executed 10 tests, with 1 failure (0 unexpected) in 0.008 (0.009) seconds")
@@ -22,6 +23,7 @@ class PrettyFormatterAllTestsSumaryTests: XCTestCase {
 
     func testTestSuiteSummary() {
         let subject = PrettyFormatter()
+        subject.maskPrint = true
 
         _ = subject.format(line: "Test Suite 'DefaultFormatterTests' passed at 2016-12-10 14:31:04.973.")
         _ = subject.format(line: "    Executed 10 tests, with 1 failure (0 unexpected) in 0.008 (0.009) seconds")

@@ -110,6 +110,23 @@ class DefaultFormatterTests: XCTestCase {
         XCTAssertEqual(kind, expected)
     }
 
+    func testTestErrorWithRuntimeError() {
+        let line = "/Users/tokorom/develop/github/swift-build-report/Sources/SwiftBuildReport/DefaultReporter.swift:70: erro"
+            + "r: -[SwiftBuildReportTests.DefaultReporterTests testBuildSummaryWithError] : failed: caught \"NSInvalidAr"
+            + "gumentException\", \"*** -[NSFileManager fileSystemRepresentationWithPath:]: nil or empty path argument\""
+        let expected: FormattedLine.Kind = .testError
+        let kind = subject.parse(line: line).kind
+        XCTAssertEqual(kind, expected)
+    }
+
+    func testTestErrorWithAssertNotNil() {
+        let line = "/Users/tokorom/develop/github/swift-build-report/Tests/SwiftBuildReportTests/DefaultReporterTests.swift:64: "
+            + "error: -[SwiftBuildReportTests.DefaultReporterTests testBuildSummaryWithError] : XCTAssertNotNil failed -"
+        let expected: FormattedLine.Kind = .testError
+        let kind = subject.parse(line: line).kind
+        XCTAssertEqual(kind, expected)
+    }
+
     func testErrorPoint() {
         let line = "  ^  "
         let expected: FormattedLine.Kind = .errorPoint

@@ -7,22 +7,17 @@
 import Foundation
 
 class PrettyFormatter: DefaultFormatter {
-    lazy var allTestsFinishedPattern: ReplacePattern = ReplacePattern(
-        pattern: "Test Suite 'All tests' (passed|failed) "
-    )
-
-    lazy var allTestsPassedPattern: ReplacePattern = ReplacePattern(
-        pattern: "^.*Executed [0-9]+ tests?, with 0 failures? \\(0 unexpected\\).*$",
-        template: "$0",
+    lazy var allTestsPassedPattern: ColorPattern = ColorPattern(
+        pattern: RegexPattern.testSummaryWithPassed.pattern,
         ansiColor: .green
     )
 
-    lazy var allTestsFailedPattern: ReplacePattern = ReplacePattern(
-        pattern: "^.*Executed [0-9]+ tests?, with [0-9]+ failures? \\([0-9]+ unexpected\\).*$",
-        template: "$0",
+    lazy var allTestsFailedPattern: ColorPattern = ColorPattern(
+        pattern: RegexPattern.testSummaryWithFailed.pattern,
         ansiColor: .red
     )
 
+    var maskPrint = false
     var isAllTestsFinished = false
     var allTestsSummary: String? = nil
 
@@ -47,7 +42,7 @@ class PrettyFormatter: DefaultFormatter {
         replacers[.testCaseFailed] = .ignore
         replacers[.errorPoint] = .color(.cyan)
         replacers[.testError] = .replacePattern(PrettyReplacePattern(
-            pattern: "^.* error: -\\[[^ ]+ ([^ ]+)\\] : ([^ ]+) failed: (.*) -.*$",
+            pattern: "^.* error: -\\[[^ ]+ ([^ ]+)\\] : ?([^ ]*) failed:? (.*)$",
             template: AnsiColor.red.text + "$1" + AnsiColor.reset.text
                 + ", $2 failed: "
                 + AnsiColor.blue.text + "$3" + AnsiColor.reset.text,
@@ -87,7 +82,7 @@ class PrettyFormatter: DefaultFormatter {
     override func handle(formattedLine: FormattedLine, rawLine: String) {
         switch formattedLine.kind {
         case .testSuitePassed, .testSuiteFailed:
-            if allTestsFinishedPattern.test(line: rawLine) {
+            if RegexPattern.allTestsFinished.test(line: rawLine) {
                 isAllTestsFinished = true
             }
         case .testSummary:
@@ -103,15 +98,19 @@ class PrettyFormatter: DefaultFormatter {
     func printAllTestsSummary(with line: String) {
         let summary: String
 
-        if allTestsPassedPattern.test(line: line), let colored = allTestsPassedPattern.replace(line: line) {
-            summary = colored
-        } else if allTestsFailedPattern.test(line: line), let colored = allTestsFailedPattern.replace(line: line) {
-            summary = colored
+        if allTestsPassedPattern.test(line: line) {
+            summary = allTestsPassedPattern.replace(line: line)
+        } else if allTestsFailedPattern.test(line: line) {
+            summary = allTestsFailedPattern.replace(line: line)
         } else {
             summary = line
         }
 
         allTestsSummary = summary
+
+        guard !maskPrint else {
+            return
+        }
 
         print("\n" + summary)
     }
