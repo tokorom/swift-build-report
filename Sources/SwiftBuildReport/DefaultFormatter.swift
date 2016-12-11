@@ -14,7 +14,7 @@ class DefaultFormatter: Formatter {
         Format(kind: .testCaseStarted, pattern: "^Test Case .* started.$"),
         Format(kind: .testCasePassed, pattern: "^Test Case .* passed [(]"),
         Format(kind: .testCaseFailed, pattern: "^Test Case .* failed [(]"),
-        Format(kind: .testError, pattern: "^\\/.* failed: .*- *$"),
+        Format(kind: .testError, pattern: "^\\/.* error: -\\[[^]]*\\] : .* failed: .*- *$"),
         Format(kind: .testSummary, pattern: " Executed [0-9]+ tests?, with [0-9]+ failures? "),
         Format(kind: .compileError, pattern: "^.*:[0-9]*:[0-9]*: error: "),
         Format(kind: .compileWarning, pattern: "^.*:[0-9]*:[0-9]*: warning: "),

@@ -37,47 +37,48 @@ class PrettyFormatter: DefaultFormatter {
         replacers[.testSuitePassed] = .ignore
         replacers[.testSuiteFailed] = .ignore
         replacers[.testCaseStarted] = .ignore
-        replacers[.testCasePassed] = .replacePattern(ReplacePattern(
+        replacers[.testCasePassed] = .replacePattern(PrettyReplacePattern(
             pattern: "^Test Case '-\\[[^ ]+ ([^ ]+)\\]' passed (\\([0-9.]+ seconds\\))\\.$",
-            template: "    " + AnsiColor.green.text + "✓" + AnsiColor.reset.text + " $1 $2",
-            ansiColor: nil
+            template: "$1 $2",
+            emoji: "✓",
+            emojiColor: AnsiColor.green,
+            indent: 4
         ))
         replacers[.testCaseFailed] = .ignore
         replacers[.errorPoint] = .color(.cyan)
-        replacers[.testError] = .replacePattern(ReplacePattern(
+        replacers[.testError] = .replacePattern(PrettyReplacePattern(
             pattern: "^.* error: -\\[[^ ]+ ([^ ]+)\\] : ([^ ]+) failed: (.*) -.*$",
-            template: "    " + AnsiColor.red.text + "✗" + AnsiColor.reset.text + " "
-                + AnsiColor.red.text + "$1" + AnsiColor.reset.text
+            template: AnsiColor.red.text + "$1" + AnsiColor.reset.text
                 + ", $2 failed: "
                 + AnsiColor.blue.text + "$3" + AnsiColor.reset.text,
-            ansiColor: nil
+            emoji: "✗",
+            emojiColor: AnsiColor.red,
+            indent: 4
         ))
         replacers[.testSummary] = .ignore
 
-        replacers[.compileError] = .replacePattern(ReplacePattern(
+        replacers[.compileError] = .replacePattern(PrettyReplacePattern(
             pattern: "^(.*) error: (.*)$",
-            template: AnsiColor.red.text + "❌ " + AnsiColor.reset.text + " "
-                + "$1" + " "
+            template: "$1" + " "
                 + AnsiColor.red.text + "$2" + AnsiColor.reset.text,
-            ansiColor: nil
+            emoji: "❌ "
         ))
         replacers[.compileStart] = .color(.cyan)
 
-        replacers[.compileWarning] = .replacePattern(ReplacePattern(
+        replacers[.compileWarning] = .replacePattern(PrettyReplacePattern(
             pattern: "^(.*) warning: (.*)$",
-            template: "⚠️ " + " "
-                + "$1" + " "
+            template: "$1" + " "
                 + AnsiColor.yellow.text + "$2" + AnsiColor.reset.text,
-            ansiColor: nil
+            emoji: "⚠️ "
         ))
         replacers[.compileStart] = .color(.cyan)
 
-        replacers[.compileNote] = .replacePattern(ReplacePattern(
+        replacers[.compileNote] = .replacePattern(PrettyReplacePattern(
             pattern: "^(.*) note: (.*)$",
-            template: AnsiColor.blue.text + "note: " + AnsiColor.reset.text
-                + "$1" + " "
+            template: "$1" + " "
                 + AnsiColor.blue.text + "$2" + AnsiColor.reset.text,
-            ansiColor: nil
+            emoji: "note:",
+            emojiColor: AnsiColor.blue
         ))
         replacers[.compileStart] = .color(.cyan)
 
@@ -115,5 +116,24 @@ class PrettyFormatter: DefaultFormatter {
         allTestsSummary = summary
 
         print("\n" + summary)
+    }
+}
+
+class PrettyReplacePattern: ReplacePattern {
+    init(pattern: String, template: String = "", emoji: String, emojiColor: AnsiColor? = nil, indent: Int = 0) {
+        let prettyEmoji: String
+        if let emojiColor = emojiColor {
+            prettyEmoji = emojiColor.text + emoji + AnsiColor.reset.text
+        } else {
+            prettyEmoji = emoji
+        }
+
+        let prettyTemplate = String(repeating: " ", count: indent)
+            + prettyEmoji
+            + " "
+            + template
+            + " "
+
+        super.init(pattern: pattern, template: prettyTemplate, ansiColor: nil)
     }
 }
