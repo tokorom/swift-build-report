@@ -71,7 +71,6 @@ class PrettyFormatter: DefaultFormatter {
                 + AnsiColor.yellow.text + "$2" + AnsiColor.reset.text,
             emoji: "⚠️ "
         ))
-        replacers[.compileStart] = .color(.cyan)
 
         replacers[.compileNote] = .replacePattern(PrettyReplacePattern(
             pattern: "^(.*) note: (.*)$",
@@ -80,7 +79,6 @@ class PrettyFormatter: DefaultFormatter {
             emoji: "note:",
             emojiColor: AnsiColor.blue
         ))
-        replacers[.compileStart] = .color(.cyan)
 
         replacers[.linking] = .color(.white)
         replacers[.buildSummaryWithError] = .color(.red)

@@ -26,6 +26,8 @@ class SimpleFormatter: DefaultFormatter {
             ColorPattern(pattern: "[1-9][0-9]* failures? [(][0-9]+ unexpected[)]", ansiColor: .red),
         ])
         replacers[.compileError] = .color(.red)
+        replacers[.compileWarning] = .color(.yellow)
+        replacers[.compileNote] = .color(.blue)
         replacers[.compileStart] = .color(.cyan)
         replacers[.linking] = .color(.green)
         replacers[.buildSummaryWithError] = .color(.red)
