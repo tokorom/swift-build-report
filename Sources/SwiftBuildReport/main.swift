@@ -25,7 +25,9 @@ enum ReportKind: String {
     case `default` = "default"
 
     var reporter: Reporter {
-        fatalError("\(#function) is not implemented")
+        switch self {
+        case .default: return DefaultReporter()
+        }
     }
 }
 
@@ -88,7 +90,7 @@ class Main {
     }
 
     func reportIfNeeded(for line: String) {
-        reporter?.add(line: line)
+        reporter?.send(line: line)
     }
 
     func handle(data: Data) {
@@ -131,12 +133,15 @@ class Main {
 
 command(
   Option("format", "pretty", description: "the print format for swift build/text (pretty or simple)"),
-  Option("report", "none", description: "the output path for error report"),
+  Option("report", "none", description: "the report format for swift build/text (default or none)"),
+  Option("output", "./.build/errors.txt", description: "the output path for error report"),
   Option("ignore", "default", description: "the setting for ignore lines (default or none)")
-) { (formatParam: String, reportParam: String, ignoreParam: String) in
+) { (formatParam: String, reportParam: String, outputPath: String, ignoreParam: String) in
     let formatter = FormatKind(rawValue: formatParam)?.formatter
-    let reporter = ReportKind(rawValue: reportParam)?.reporter
+    var reporter = ReportKind(rawValue: reportParam)?.reporter
     let ignoreLines = IgnoreKind(rawValue: ignoreParam)?.ignoreLines
+
+    reporter?.outputPath = outputPath
 
     let main = Main(formatter: formatter, reporter: reporter, ignoreLines: ignoreLines)
     main.run()

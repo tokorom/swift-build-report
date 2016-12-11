@@ -6,7 +6,7 @@
 
 import Foundation
 
-class Reporter {
-    func add(line: String) {
-    }
+protocol Reporter {
+    var outputPath: String { get set }
+    func send(line: String)
 }

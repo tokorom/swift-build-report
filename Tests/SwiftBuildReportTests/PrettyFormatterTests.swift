@@ -11,6 +11,11 @@ class PrettyFormatterTests: XCTestCase {
     let subject = PrettyFormatter()
     let utils = Utils()
 
+    override func setUp() {
+        super.setUp()
+        subject.maskPrint = true
+    }
+
     func testTestSuiteStarted() {
         let line = "Test Suite 'All tests' started at 2016-12-10 16:04:52.126"
         let expected = "All tests"
@@ -57,8 +62,8 @@ class PrettyFormatterTests: XCTestCase {
         let line = "/Users/tokorom/develop/github/swift-build-report/Tests/SwiftBuildReportTests/DefaultFormatterTests.swift"
             + ":45: error: -[SwiftBuildReportTests.DefaultFormatterTests testBuildErrorSummary] : "
             + "XCTAssertEqual failed: (\"normal\") is not equal to (\"buildSummaryWithError\") -"
-        let expected = "    ✗ testBuildErrorSummary, XCTAssertEqual failed: (\"normal\") "
-            + "is not equal to (\"buildSummaryWithError\") "
+        let expected = "    ✗ testBuildErrorSummary, XCTAssertEqual failed: (\"normal\") is not"
+            + " equal to (\"buildSummaryWithError\") - "
         let result = utils.removeColorCode(subject.parse(line: line).line ?? "")
         XCTAssertEqual(result, expected)
     }
