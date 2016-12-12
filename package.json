@@ -1,9 +1,0 @@
-{
-  "scripts": {
-    "start": "npm run watch",
-    "build": "swift build",
-    "test": "swift test",
-    "watch": "watch 'npm run test' ./Sources ./Tests",
-    "copy": "cp ./.build/debug/SwiftBuildReport ./swift-build-report"
-  }
-}

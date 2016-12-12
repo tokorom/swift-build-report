@@ -1,5 +1,0 @@
-disabled_rules:
-line_length:
-  - 150 # warning
-function_body_length:
-  - 50 # warning
